@@ -8,13 +8,17 @@ module Euler (
   isPalindrome,
   primes,
   isPrime,
-  isPandigital
+  isPandigital,
+  isPerfectSquare,
+  intSqrt,
+  mostCommon
 ) where
 
 import Numeric
 import Data.Char
 import Data.List
 import Data.Maybe
+import Data.Ord
 import Control.Applicative
 
 base :: (Integral a, Show a) => a -> a -> String
@@ -58,3 +62,17 @@ isPandigital = (containsAll "123456789" . decimal) <&&> (< 1000000000)
 
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
+
+squares :: [Integer]
+squares = map (\n -> n*n) [0..]
+
+isPerfectSquare :: Integral a => a -> Bool
+isPerfectSquare n = (== m) . fromJust . find (>= m) $ squares
+  where m = toInteger n
+
+intSqrt :: Integral a => a -> Maybe a
+intSqrt n = if isPerfectSquare n then
+  fmap fromIntegral . elemIndex (toInteger n) $ squares else Nothing
+
+mostCommon :: Ord a => [a] -> a
+mostCommon = head . maximumBy (comparing length) . group . sort
