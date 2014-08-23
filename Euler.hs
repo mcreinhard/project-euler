@@ -5,15 +5,18 @@ module Euler (
   readBase,
   readBinary,
   readDecimal,
+  numDigits,
   isPalindrome,
   primes,
   isPrime,
   isPandigital,
+  is19Pandigital,
   isPerfectSquare,
   intSqrt,
   mostCommon
 ) where
 
+import MillerRabin
 import Numeric
 import Data.Char
 import Data.List
@@ -39,6 +42,9 @@ readBinary = readBase 2
 readDecimal :: (Integral a) => String -> a
 readDecimal = readBase 10
 
+numDigits :: (Integral a, Show a, Integral b) => a -> b
+numDigits = fromIntegral . length . decimal
+
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
 
@@ -47,18 +53,18 @@ primes = sieve [2..] where sieve [] = []
                            sieve (x:xs) = x : sieve [n | n <- xs, n `mod` x > 0]
 
 isPrime :: Integral a => a -> Bool
-isPrime = (isPrimeList !!) . fromIntegral
-
-isPrimeList :: [Bool]
-isPrimeList = map inPrimes [0..]
-  where inPrimes n = (== n) . fromJust . find (>= n) $ primes
+isPrime n = all (millerRabinPrimality (toInteger n)) $ take 10 primes
 
 containsAll :: Eq a => [a] -> [a] -> Bool
 containsAll [] _ = True
 containsAll (x:xs) l = x `elem` l && containsAll xs (delete x l)
 
+is19Pandigital :: (Integral a, Show a) => a -> Bool
+is19Pandigital = (>= 100000000) <&&> isPandigital
+
 isPandigital :: (Integral a, Show a) => a -> Bool
-isPandigital = (containsAll "123456789" . decimal) <&&> (< 1000000000)
+isPandigital n = d < 10 && containsAll (take d "123456789") (decimal n)
+  where d = numDigits n
 
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
