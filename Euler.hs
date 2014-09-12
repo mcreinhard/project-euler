@@ -4,8 +4,9 @@ module Euler (
   isPerfectSquare, intSqrt, triangleNums, isTriangleNum,
   isPalindrome,
   isPandigital, is19Pandigital, is09Pandigital,
-  mostCommon,
+  mostCommon, hasDuplicates,
   alphabetPosition, wordValue,
+  divides,
   (<&&>), (<||>)
 ) where
 
@@ -85,11 +86,20 @@ is09Pandigital = (>= 10^9) <&&> isPandigital
 mostCommon :: Ord a => [a] -> a
 mostCommon = head . maximumBy (comparing length) . group . sort
 
+hasDuplicates :: Eq a => [a] -> Bool
+hasDuplicates = length </=> (length . Data.List.nub)
+
 alphabetPosition :: Integral a => Char -> a
 alphabetPosition c = fromIntegral $ (ord . toLower $ c) - ord 'a' + 1
 
 wordValue :: Integral a => String -> a
 wordValue = sum . map alphabetPosition
+
+divides :: Integral a => a -> a -> Bool
+divides m n = n `mod` m == 0
+
+(</=>) :: (Applicative f, Eq a) => f a -> f a -> f Bool
+(</=>) = liftA2 (/=)
 
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
