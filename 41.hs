@@ -1,4 +1,4 @@
-module Problem41 (answer) where
+-- Problem 41
 import Euler
 import Data.List
 import Data.Maybe
@@ -8,6 +8,7 @@ orderedPermutations [] = [[]]
 orderedPermutations a = concatMap f a
   where f n = map (n:) . orderedPermutations $ delete n a
 
-answer :: Integer
-answer =
-  fromMaybe 0 . find isPrime . map readDecimal $ orderedPermutations "7654321"
+answer = fromMaybe 0 . find isPrime . map readDecimal
+  $ orderedPermutations "7654321"
+
+main = print answer

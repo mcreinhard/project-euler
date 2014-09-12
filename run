@@ -1,4 +1,0 @@
-#!/bin/zsh
-
-echo "import Problem$1\nmain = print answer" > printAnswer.hs
-runhaskell printAnswer.hs
