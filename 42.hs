@@ -5,5 +5,7 @@ import Data.List.Split
 numTriangleWords :: [String] -> Integer
 numTriangleWords = toInteger . length . filter (isTriangleNum . wordValue)
 
-main = readFile "resources/p042_words.txt"
-  >>= print . numTriangleWords . wordsBy (`elem` "\",")
+answer :: String -> Integer
+answer = numTriangleWords . wordsBy (`elem` "\",")
+
+main = readFile "resources/p042_words.txt" >>= print . answer
