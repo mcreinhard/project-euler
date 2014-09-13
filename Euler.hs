@@ -1,7 +1,7 @@
 module Euler (
   base, binary, decimal, readBase, readBinary, readDecimal, numDigits,
   primes, isPrime,
-  isPerfectSquare, intSqrt, triangleNums, isTriangleNum,
+  intSqrt, isPerfectSquare, triangleNums, isTriangleNum,
   pentagonalNums, isPentagonal, hexagonalNums,
   isPalindrome,
   isPandigital, is19Pandigital, is09Pandigital,
@@ -54,12 +54,12 @@ isPrime n
 squares :: Integral a => [a]
 squares = map (\n -> n*n) [0..]
 
-isPerfectSquare :: Integral a => a -> Bool
-isPerfectSquare n = n `member` squares
+intSqrt :: Integral a => a -> a
+intSqrt n = round $ sqrt x
+  where x = fromIntegral n :: Double
 
-intSqrt :: Integral a => a -> Maybe a
-intSqrt n = if isPerfectSquare n then
-  fmap fromIntegral . elemIndex (toInteger n) $ squares else Nothing
+isPerfectSquare :: Integral a => a -> Bool
+isPerfectSquare n = n == (intSqrt n)^2
 
 triangleNums :: Integral a => [a]
 triangleNums = map (\n -> n*(n+1) `div` 2) [0..]
@@ -74,7 +74,9 @@ hexagonalNums :: Integral a => [a]
 hexagonalNums = map (\n -> n*(2*n-1)) [0..]
 
 isPentagonal :: Integral a => a -> Bool
-isPentagonal n = n `member` pentagonalNums
+isPentagonal n = isPerfectSquare m && intSqrt m `mod` 6 == 5
+  where m = 24*n+1
+
 
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
