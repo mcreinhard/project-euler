@@ -2,6 +2,7 @@ module Euler (
   base, binary, decimal, readBase, readBinary, readDecimal, numDigits,
   primes, isPrime,
   isPerfectSquare, intSqrt, triangleNums, isTriangleNum,
+  pentagonalNums, isPentagonal, hexagonalNums,
   isPalindrome,
   isPandigital, is19Pandigital, is09Pandigital,
   mostCommon, hasDuplicates,
@@ -65,6 +66,15 @@ triangleNums = map (\n -> n*(n+1) `div` 2) [0..]
 
 isTriangleNum :: Integral a => a -> Bool
 isTriangleNum n = n `member` triangleNums
+
+pentagonalNums :: Integral a => [a]
+pentagonalNums = map (\n -> n*(3*n-1) `div` 2) [0..]
+
+hexagonalNums :: Integral a => [a]
+hexagonalNums = map (\n -> n*(2*n-1)) [0..]
+
+isPentagonal :: Integral a => a -> Bool
+isPentagonal n = n `member` pentagonalNums
 
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
