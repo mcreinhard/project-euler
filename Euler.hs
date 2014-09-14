@@ -41,7 +41,7 @@ numDigits :: (Integral a, Show a, Integral b) => a -> b
 numDigits = fromIntegral . length . decimal
 
 primes :: Integral a => [a]
-primes = sieve [2..]
+primes = (takeWhile (< 100) $ sieve [2..]) ++ filter isPrime [100..]
   where sieve [] = []
         sieve (x:xs) = x : sieve [n | n <- xs, n `mod` x > 0]
 
@@ -76,7 +76,6 @@ hexagonalNums = map (\n -> n*(2*n-1)) [0..]
 isPentagonal :: Integral a => a -> Bool
 isPentagonal n = isPerfectSquare m && intSqrt m `mod` 6 == 5
   where m = 24*n+1
-
 
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
