@@ -1,6 +1,6 @@
 module Euler (
   base, binary, decimal, readBase, readBinary, readDecimal, numDigits,
-  primes, isPrime,
+  primes, isPrime, primeFactors, numUniquePrimeFactors,
   intSqrt, isPerfectSquare, triangleNums, isTriangleNum,
   pentagonalNums, isPentagonal, hexagonalNums,
   isPalindrome,
@@ -50,6 +50,14 @@ isPrime n
   | n < primes !! 10 = n `member` primes
   | otherwise        = all (millerRabinPrimality m) $ take 10 primes
   where m = toInteger n
+
+primeFactors :: Integral a => a -> [a]
+primeFactors 1 = []
+primeFactors n = p : primeFactors (n `div` p)
+  where p = head $ filter (`divides` n) primes
+
+numUniquePrimeFactors :: Integer -> Int
+numUniquePrimeFactors = length . Data.List.nub . primeFactors
 
 squares :: Integral a => [a]
 squares = map (\n -> n*n) [0..]
