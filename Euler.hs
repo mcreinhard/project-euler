@@ -8,7 +8,7 @@ module Euler (
   mostCommon, hasDuplicates,
   alphabetPosition, wordValue,
   divides,
-  (<&&>), (<||>)
+  (<==>), (</=>), (<&&>), (<||>)
 ) where
 
 import MillerRabin
@@ -116,6 +116,9 @@ wordValue = sum . map alphabetPosition
 
 divides :: Integral a => a -> a -> Bool
 divides m n = n `mod` m == 0
+
+(<==>) :: (Applicative f, Eq a) => f a -> f a -> f Bool
+(<==>) = liftA2 (==)
 
 (</=>) :: (Applicative f, Eq a) => f a -> f a -> f Bool
 (</=>) = liftA2 (/=)
