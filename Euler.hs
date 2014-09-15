@@ -41,7 +41,7 @@ numDigits :: (Integral a, Show a, Integral b) => a -> b
 numDigits = fromIntegral . length . decimal
 
 primes :: Integral a => [a]
-primes = (takeWhile (< 100) $ sieve [2..]) ++ filter isPrime [100..]
+primes = takeWhile (< 100) (sieve [2..]) ++ filter isPrime [100..]
   where sieve [] = []
         sieve (x:xs) = x : sieve [n | n <- xs, n `mod` x > 0]
 
@@ -59,15 +59,12 @@ primeFactors n = p : primeFactors (n `div` p)
 numUniquePrimeFactors :: Integer -> Int
 numUniquePrimeFactors = length . Data.List.nub . primeFactors
 
-squares :: Integral a => [a]
-squares = map (\n -> n*n) [0..]
-
 intSqrt :: Integral a => a -> a
 intSqrt n = round $ sqrt x
   where x = fromIntegral n :: Double
 
 isPerfectSquare :: Integral a => a -> Bool
-isPerfectSquare n = n == (intSqrt n)^2
+isPerfectSquare n = n == intSqrt n ^ 2
 
 triangleNums :: Integral a => [a]
 triangleNums = map (\n -> n*(n+1) `div` 2) [0..]
