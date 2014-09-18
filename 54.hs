@@ -84,9 +84,9 @@ highCardsInRank hand rank = case rank of
           StraightFlush -> isStraight <&&> isFlush
           _ -> const False
 
-rankWithCards :: Hand -> ((PokerRank, [Card]), [Card])
-rankWithCards hand = (rankAndHighCards, allCards)
-  where rankAndHighCards = head . catMaybes
+rankWithCards :: Hand -> (PokerRank, [Card], [Card])
+rankWithCards hand = (bestRank, highCards, allCards)
+  where (bestRank, highCards) = head . catMaybes
           $ [(,) rank <$> highCardsInRank hand rank | rank <- ranks]
         allCards = sortBy (flip compare) $ cards hand
 
