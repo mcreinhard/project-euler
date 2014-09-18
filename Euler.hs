@@ -1,5 +1,5 @@
 module Euler (
-  base, binary, decimal, readBase, readBinary, readDecimal, numDigits,
+  base, binary, decimal, readBase, readBinary, readDecimal, numDigits, digits,
   primes, isPrime, primeFactors, numUniquePrimeFactors,
   intSqrt, isPerfectSquare, triangleNums, isTriangleNum,
   pentagonalNums, isPentagonal, hexagonalNums,
@@ -39,6 +39,9 @@ readDecimal = readBase 10
 
 numDigits :: (Integral a, Show a, Integral b) => a -> b
 numDigits = fromIntegral . length . decimal
+
+digits :: (Integral a, Show a) => a -> [a]
+digits = map (fromIntegral . digitToInt) . decimal
 
 primes :: Integral a => [a]
 primes = takeWhile (< 100) (sieve [2..]) ++ filter isPrime [100..]
