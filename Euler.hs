@@ -114,14 +114,18 @@ wordValue = sum . map alphabetPosition
 divides :: Integral a => a -> a -> Bool
 divides m n = n `mod` m == 0
 
+infix 4 <==>
 (<==>) :: (Applicative f, Eq a) => f a -> f a -> f Bool
 (<==>) = liftA2 (==)
 
+infix 4 </=>
 (</=>) :: (Applicative f, Eq a) => f a -> f a -> f Bool
 (</=>) = liftA2 (/=)
 
+infixr 3 <&&>
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
 
+infixr 2 <||>
 (<||>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<||>) = liftA2 (||)
