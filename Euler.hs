@@ -3,12 +3,13 @@ module Euler (
   primes, isPrime, primeFactors, numUniquePrimeFactors,
   intSqrt, isPerfectSquare, triangleNums, isTriangleNum,
   pentagonalNums, isPentagonal, hexagonalNums,
-  isPalindrome,
+  isPalindrome, isPermutation,
   isPandigital, is19Pandigital, is09Pandigital,
   mostCommon, hasDuplicates,
   alphabetPosition, wordValue,
-  divides,
-  (<==>), (</=>), (<&&>), (<||>)
+  divides, totient,
+  (<==>), (</=>), (<&&>), (<||>),
+  argmax, argmin
 ) where
 
 import MillerRabin
@@ -17,6 +18,7 @@ import Data.Char
 import Data.List
 import Data.List.Ordered
 import Data.Ord
+import Data.MemoTrie
 import Control.Applicative
 
 base :: (Integral b, Integral a, Show a) => b -> a -> String
@@ -88,6 +90,11 @@ isPentagonal n = isPerfectSquare m && intSqrt m `mod` 6 == 5
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
 
+isPermutation :: Eq a => [a] -> [a] -> Bool
+isPermutation s t = case s of
+  [] ->  null t
+  x:xs -> (x `elem` t) && isPermutation xs (delete x t)
+
 containsAll :: Eq a => [a] -> [a] -> Bool
 containsAll [] _ = True
 containsAll (x:xs) l = x `elem` l && containsAll xs l
@@ -117,6 +124,16 @@ wordValue = sum . map alphabetPosition
 divides :: Integral a => a -> a -> Bool
 divides m n = n `mod` m == 0
 
+totient :: (Integral a, HasTrie a) => a -> a
+totient = memo phi where
+  phi k
+    | k == 1    = 1
+    | isPrime k = k-1
+    | otherwise = totient m * totient n * d `div` totient d
+    where m = head . filter (`divides` k) $ primes
+          n = k `div` m
+          d = gcd m n
+
 infix 4 <==>
 (<==>) :: (Applicative f, Eq a) => f a -> f a -> f Bool
 (<==>) = liftA2 (==)
@@ -132,3 +149,9 @@ infixr 3 <&&>
 infixr 2 <||>
 (<||>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<||>) = liftA2 (||)
+
+argmax :: Ord b => (a -> b) -> [a] -> a
+argmax f = maximumBy (comparing f)
+
+argmin :: Ord b => (a -> b) -> [a] -> a
+argmin f = minimumBy (comparing f)
