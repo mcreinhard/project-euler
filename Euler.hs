@@ -8,7 +8,7 @@ module Euler (
   mostCommon, hasDuplicates,
   alphabetPosition, wordValue,
   divides, totient,
-  (<==>), (</=>), (<&&>), (<||>),
+  (<==>), (</=>), (<&&>), (<||>), (<+>),
   argmax, argmin
 ) where
 
@@ -150,8 +150,14 @@ infixr 2 <||>
 (<||>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<||>) = liftA2 (||)
 
+infixl 6 <+>
+(<+>) :: (Applicative f, Num a) => f a -> f a -> f a
+(<+>) = liftA2 (+)
+
 argmax :: Ord b => (a -> b) -> [a] -> a
-argmax f = maximumBy (comparing f)
+argmax f = foldl1 maxBy
+  where maxBy x y = if f x >= f y then x else y
 
 argmin :: Ord b => (a -> b) -> [a] -> a
-argmin f = minimumBy (comparing f)
+argmin f = foldl1 minBy
+  where minBy x y = if f x <= f y then x else y
