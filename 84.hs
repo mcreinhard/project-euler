@@ -1,9 +1,12 @@
 -- Problem 84
-import Euler
 import Data.List
 import Data.Maybe
 import Control.Monad
+import Control.Applicative
 import Numeric.Probability.Distribution
+
+boardSize = 40
+dieSize = 4
 
 data Square = GO|A1|CC1|A2|T1|R1|B1|CH1|B2|B3   -- Row 1
               |JAIL|C1|U1|C2|C3|R2|D1|CC2|D2|D3 -- Row 2
@@ -13,42 +16,32 @@ data Square = GO|A1|CC1|A2|T1|R1|B1|CH1|B2|B3   -- Row 1
 
 isCC :: Square -> Bool
 isCC = (`elem` [CC1,CC2,CC3])
-
-isCH :: Square -> Bool
 isCH = (`elem` [CH1,CH2,CH3])
-
-isR :: Square -> Bool
 isR = (`elem` [R1,R2,R3,R4])
-
-isU :: Square -> Bool
 isU = (`elem` [U1,U2])
 
 offsetBy :: Int -> Square -> Square
 offsetBy n = toEnum . (`mod` boardSize) . (+ n) . fromEnum
 
 nextR :: Square -> Square
-nextR = fromJust . find isR . iterate (offsetBy 1)
+nextR = fromJust . Data.List.find isR . iterate (offsetBy 1)
 
 nextU :: Square -> Square
-nextU = fromJust . find isU . iterate (offsetBy 1)
-
-boardSize :: Int
-boardSize = 40
-
-dieSize :: Int
-dieSize = 6
+nextU = fromJust . Data.List.find isU . iterate (offsetBy 1)
 
 dieDist :: T Double Int
 dieDist = uniform [1..dieSize]
 
-twoDiceDist :: T Double Int
-twoDiceDist = dieDist <+> dieDist
+twoDiceDist :: T Double (Int,Int)
+twoDiceDist = (,) <$> dieDist <*> dieDist
 
 movementDist :: Square -> T Double Square
-movementDist sq = let threeDoubles = 1 / fromIntegral (dieSize^3) in
-    do roll <- twoDiceDist
-       fromFreqs [(JAIL,threeDoubles),
-                  (offsetBy roll sq,1-threeDoubles)]
+movementDist sq = do
+    (m,n) <- twoDiceDist
+    let twoDoubles = 1 / fromIntegral (dieSize^2)
+    let nextSquare = offsetBy (m+n) sq
+    if m == n then fromFreqs [(JAIL,twoDoubles), (nextSquare,1-twoDoubles)]
+              else certainly nextSquare
 
 redirectDist :: Square -> T Double Square
 redirectDist sq
@@ -64,5 +57,9 @@ nextSquareDist :: Square -> T Double Square
 nextSquareDist = movementDist >=> redirectDist
 
 main :: IO ()
-main = let iterations = iterate (norm . (>>= nextSquareDist)) (uniform [GO .. H2]) in
-       print . drop 36 . sortP . decons $ (iterations !! 200)
+main = 
+    let iterations = iterate (norm . (>>= nextSquareDist)) (uniform [GO .. H2])
+        mostCommon = take 3 . reverse . sortP . decons $ (iterations !! 100)
+    in do putStr $ pretty show (iterations !! 300)
+          print mostCommon
+          print $ concatMap (show . fromEnum . fst) mostCommon
