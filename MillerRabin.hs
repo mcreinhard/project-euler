@@ -1,5 +1,8 @@
+-- Miller-Rabin implementation from
+-- https://www.haskell.org/haskellwiki/Testing_primality
+
 module MillerRabin (millerRabinPrimality) where
---
+
 -- (eq. to) find2km (2^k * n) = (k,n)
 find2km :: Integral a => a -> (a,a)
 find2km = f 0
