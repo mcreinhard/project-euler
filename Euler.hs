@@ -3,7 +3,7 @@ module Euler (
   primes, isPrime, primeFactors, numUniquePrimeFactors,
   intSqrt, isPerfectSquare, triangleNums, isTriangleNum,
   pentagonalNums, isPentagonal, hexagonalNums,
-  isPalindrome, isPermutation,
+  rotate, isPalindrome, isPermutation,
   isPandigital, is19Pandigital, is09Pandigital,
   mostCommon, hasDuplicates,
   alphabetPosition, wordValue,
@@ -89,6 +89,9 @@ isPentagonal n = isPerfectSquare m && intSqrt m `mod` 6 == 5
 
 isPalindrome :: String -> Bool
 isPalindrome s = s == reverse s
+
+rotate :: Int -> [a] -> [a]
+rotate i xs = take (length xs) . drop i $ cycle xs
 
 isPermutation :: Eq a => [a] -> [a] -> Bool
 isPermutation s t = case s of
